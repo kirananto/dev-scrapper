@@ -141,7 +141,7 @@ const searchForRepos = async (
 
 const fetchAllCommitsAPI = async (repo_name, keywords) => {
   try {
-    await sleep(1000);
+    await sleep(6000);
     const result = await axios({
       url: `https://api.github.com/repos/${repo_name}/commits`
     });

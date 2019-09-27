@@ -38,9 +38,6 @@ readline.question(
     readline.close();
     let reposList = await searchForRepos(keywords, 0, []);
     if (reposList.length > 0) {
-      console.log(
-        `\n\n${chalk.white.bgGreen.bold(` DONE `)} Cleaning up repositories`
-      );
       reposList = uniqBy(reposList, JSON.stringify);
       console.log(
         `\n${chalk.white.bgGreen.bold(` DONE `)} Retrieved ${chalk.bold(
@@ -103,7 +100,7 @@ const searchForRepos = async (
   page: number,
   prevReposList: any[]
 ) => {
-  const reposList = prevReposList;
+  const reposList = uniqBy(prevReposList, JSON.stringify);
   let result;
   try {
     result = await axios({
@@ -117,11 +114,13 @@ const searchForRepos = async (
       bar1.start(result.data.total_count, 0);
     }
     await reposList.push(...result.data.items);
+
+    bar1.update(reposList.length);
     if (result.data.total_count > reposList.length) {
       await sleep(result.data.total_count > 270 ? 6100 : 10);
       return await searchForRepos(keywords, page + 1, reposList);
     } else {
-      bar1.update(reposList.length);
+      bar1.update(result.data.total_count);
       await sleep(1000);
       return reposList;
     }
@@ -146,9 +145,6 @@ const fetchAllCommitsAPI = async (repo_name, keywords) => {
     const result = await axios({
       url: `https://api.github.com/repos/${repo_name}/commits`
     });
-    console.log(
-      `Got emails from ${chalk.green.bold(repo_name)}, Processing it...`
-    );
     const emails_array: any[] = result.data
       .filter(
         item =>
@@ -165,7 +161,9 @@ const fetchAllCommitsAPI = async (repo_name, keywords) => {
     const emails = uniqBy(emails_array, JSON.stringify);
     await sleep(200);
     await csvWriter.writeRecords(emails);
-    console.log(`✅ Processed emails from ${chalk.green.bold(repo_name)}`);
+    console.log(`✅ Collected ${chalk.green.bold(
+        `${emails_array.length}`
+      )} emails from ${chalk.green.bold(repo_name)}`);
     return emails;
   } catch (error) {
     console.log(`❌ Cannot retriving data from ${chalk.red.bold(repo_name)}`);

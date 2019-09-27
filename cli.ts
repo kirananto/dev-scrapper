@@ -40,7 +40,7 @@ readline.question(
     if (reposList.length > 0) {
       reposList = uniqBy(reposList, JSON.stringify);
       console.log(
-        `\n${chalk.white.bgGreen.bold(` DONE `)} Retrieved ${chalk.bold(
+        `\n\n${chalk.white.bgGreen.bold(` DONE `)} Retrieved ${chalk.bold(
           `${reposList.length}`
         )} repositories`
       );
@@ -90,11 +90,6 @@ const bar1 = new _cliProgress.SingleBar(
   _cliProgress.Presets.shades_classic
 );
 
-const bar2 = new _cliProgress.SingleBar(
-  {},
-  _cliProgress.Presets.shades_classic
-);
-
 const searchForRepos = async (
   keywords: string,
   page: number,
@@ -126,15 +121,15 @@ const searchForRepos = async (
     }
   } catch (e) {
     console.log(
-      `${chalk.red.bold(`\nRate Limited `)} - Sleeping for 1 minute\n`
+      `${chalk.red.bold(`\n\n\nRate Limited `)} - Sleeping for 1 minute\n`
     );
-    bar2.start(100, 0);
-    await Array(100)
-      .fill(1)
-      .forEach(async (item, index) => {
-        await bar2.update(index + 1);
-        await sleep(600);
-      });
+    await sleep(30000);
+    console.log('30 seconds left...\n')
+    await sleep(20000);
+    console.log('10 seconds left...\n')
+    await sleep(7000);
+    console.log('3 seconds left...\n')
+    await sleep(3000);
     return searchForRepos(keywords, page, reposList);
   }
 };
@@ -161,9 +156,11 @@ const fetchAllCommitsAPI = async (repo_name, keywords) => {
     const emails = uniqBy(emails_array, JSON.stringify);
     await sleep(200);
     await csvWriter.writeRecords(emails);
-    console.log(`✅ Collected ${chalk.green.bold(
+    console.log(
+      `✅ Collected ${chalk.green.bold(
         `${emails_array.length}`
-      )} emails from ${chalk.green.bold(repo_name)}`);
+      )} emails from ${chalk.green.bold(repo_name)}`
+    );
     return emails;
   } catch (error) {
     console.log(`❌ Cannot retriving data from ${chalk.red.bold(repo_name)}`);

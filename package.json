@@ -1,5 +1,5 @@
 {
-  "name": "scrapper",
+  "name": "devscrapper",
   "version": "1.0.0",
   "description": "Scrape from github",
   "main": "index.js",

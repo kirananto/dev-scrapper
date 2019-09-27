@@ -4,7 +4,7 @@
   "description": "Scrape from github",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node src/cli.ts"
   },
   "author": "Kiran Anto<kiran@gmail.com>",
   "license": "ISC",
@@ -16,6 +16,6 @@
     "axios": "^0.19.0",
     "chalk": "^2.4.2",
     "cli-progress": "^3.1.0",
-    "csv-writer": "^1.5.0",
+    "csv-writer": "^1.5.0"
   }
 }

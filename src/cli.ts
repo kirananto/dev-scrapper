@@ -5,7 +5,7 @@ import chalk from "chalk";
 import Axios from "axios";
 const _cliProgress = require("cli-progress");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
-const fileName = `${new Date()
+const fileName = `output/${new Date()
   .toUTCString()
   .replace(/ /g, "_")
   .toLowerCase()}.csv`;

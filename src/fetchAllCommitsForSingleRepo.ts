@@ -37,7 +37,7 @@ export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName
             try {
                 await RequestForNewIP()
             } catch {
-                console.log(`\n❌ Cannot retriving data from ${chalk.red.bold(repo_name)}, stopping mining in this repo`)
+                console.log(`\n❌ Cannot retrieving data from ${chalk.red.bold(repo_name)}, stopping mining in this repo`)
                 emails_new = []
                 const uniqueEmails = uniqBy(emails_array, JSON.stringify)
                 return uniqueEmails

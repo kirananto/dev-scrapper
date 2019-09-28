@@ -21,7 +21,7 @@ console.log(
 )
 checkForTor(0)
     .then(result => {
-        readline.question(`\nPlease enter the keywords you wish to search for (comma seperated) : `, async keywords => {
+        readline.question(`\nPlease enter the keywords you wish to search for (comma separated) : `, async keywords => {
             console.log(`\nSearching for keywords - ${chalk.blue.bold(keywords)}!\n\n`)
             const url = encodeURI(`https://api.github.com/search/repositories?q=${keywords.split(',').join('+')}`)
             readline.close()

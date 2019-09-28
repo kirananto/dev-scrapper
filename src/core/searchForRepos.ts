@@ -1,6 +1,6 @@
-import { uniqBy, sleep } from './helpers'
+import { uniqBy, sleep } from '../helpers/helpers'
 import chalk from 'chalk'
-import { getViaTor } from './apiRequest'
+import { getViaTor } from '../helpers/apiRequest'
 const _cliProgress = require('cli-progress')
 
 const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic)

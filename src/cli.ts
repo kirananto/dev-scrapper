@@ -1,5 +1,5 @@
 import chalk from "chalk"
-import { scrapeEmails } from "./scrapeEmails"
+import { scrapeEmails } from "./core/scrapeEmails"
 
 const readline = require('readline').createInterface({
     input: process.stdin,

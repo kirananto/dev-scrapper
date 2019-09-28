@@ -2,7 +2,7 @@
 
 import chalk from 'chalk'
 import { searchForRepos } from './searchForRepos'
-import { uniqBy, sleep } from './helpers'
+import { uniqBy, sleep } from '../helpers/helpers'
 import { fetchAllCommitsForSingleRepo } from './fetchAllCommitsForSingleRepo'
 import { format } from 'date-fns'
 import { checkForTor } from './tor'

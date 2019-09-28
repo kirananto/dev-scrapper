@@ -1,7 +1,7 @@
-import { sleep, uniqBy } from './helpers'
+import { sleep, uniqBy } from '../helpers/helpers'
 import chalk from 'chalk'
 import { RequestForNewIP } from './tor'
-import { getViaTor } from './apiRequest'
+import { getViaTor } from '../helpers/apiRequest'
 const createCsvWriter = require('csv-writer').createObjectCsvWriter
 
 export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName) => {

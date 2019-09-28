@@ -1,6 +1,6 @@
 const tr = require('tor-request')
 const { spawn } = require('child_process')
-import { sleep } from './helpers'
+import { sleep } from '../helpers/helpers'
 tr.TorControlPort.password = 'giraffe'
 // tr.request('https://api.ipify.org', (err, res, body) => {
 //     if (!err && res.statusCode == 200) {

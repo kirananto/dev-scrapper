@@ -59,12 +59,12 @@ readline.question(
             await csvWriter.writeRecords(uniqueEmails)
 
             console.log(
-                `\n\n${chalk.green.bold(`${uniqueEmails.length}`)} emails collected successfully. Data is available in ${chalk.whiteBright.bold(
+                `\n\n${chalk.green.bold(`${uniqueEmails.length}`)} emails collected successfully.\nData is available in ${chalk.whiteBright.bold(
                     `./${fileName}_${keywords
                         .split(',')
                         .join('_')
                         .replace(/ /g, '')}_final.csv`
-                )}...\nThank you for using this tool.For more info visit https://github.com/kirananto\n\n`
+                )}...\nThank you for using this tool.\nFor more info visit https://github.com/kirananto\n\n`
             )
             process.exit()
         } else {

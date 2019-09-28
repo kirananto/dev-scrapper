@@ -21,7 +21,7 @@ export const scrapeEmails = async keywords => {
             await sleep(100)
             const repos = await reposList.map(item => {
                 return {
-                    full_name: item.full_name.,
+                    full_name: item.full_name,
                     api_url: `https://api.github.com/repos/${item.full_name}/commits/`,
                     web_url: `https://github.com/${item.full_name}/commits/master`,
                 }

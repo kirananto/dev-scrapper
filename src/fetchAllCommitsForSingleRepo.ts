@@ -31,7 +31,7 @@ export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName
             const emails = uniqBy(emails_new, JSON.stringify)
             await sleep(200)
             await csvWriter.writeRecords(emails)
-            console.log(`🔄 ${chalk.bgBlue.bold(` PASS ${page} `)} Fetching ${chalk.green.bold(`${emails.length}`)} emails from ${chalk.green.bold(repo_name)}`)
+            console.log(`🔄 ${chalk.bgBlue.bold(` PASS ${page} `)} Retrieved ${chalk.green.bold(`${emails_array.length - emails.length}`)} unique emails from page ${page} of ${chalk.green.bold(repo_name)}`)
         } catch (error) {
             console.log(`\n⚠️ Rate limit reached, Trying to refresh the ip address\n`)
             try {

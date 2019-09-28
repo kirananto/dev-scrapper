@@ -19,7 +19,7 @@ export const searchForRepos = async (keywords: string, page: number, prevReposLi
 
         bar1.update(reposList.length)
         if (result.data.total_count > reposList.length) {
-            await sleep(result.data.total_count > 270 ? 6100 : 10)
+            await sleep(result.data.total_count > 100 ? 6100 : 10)
             return await searchForRepos(keywords, page + 1, reposList)
         } else {
             bar1.update(result.data.total_count)

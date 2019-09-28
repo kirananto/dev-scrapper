@@ -1,6 +1,7 @@
 import { sleep, uniqBy } from './helpers'
 import Axios from 'axios'
 import chalk from 'chalk'
+import { RequestForNewIP } from './tor'
 const createCsvWriter = require('csv-writer').createObjectCsvWriter
 
 export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName) => {
@@ -33,13 +34,17 @@ export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName
             const emails = uniqBy(emails_new, JSON.stringify)
             await sleep(200)
             await csvWriter.writeRecords(emails)
-            console.log(`🔄${chalk.bold(`PASS ${page+1}`)} Fetching ${chalk.green.bold(`${emails.length}`)} emails from ${chalk.green.bold(repo_name)}`)
+            console.log(`🔄 ${chalk.bgBlue.bold(` PASS ${page} `)} Fetching ${chalk.green.bold(`${emails.length}`)} emails from ${chalk.green.bold(repo_name)}`)
         } catch (error) {
-            console.log(`❌ Cannot retriving data from ${chalk.red.bold(repo_name)}, stopping mining in this repo`)
-            //   console.log("ERROR", error);
-            emails_new = []
-            const uniqueEmails = uniqBy(emails_array, JSON.stringify)
-            return uniqueEmails
+            console.log(`\n⚠️ Rate limit reached, Trying to refresh the ip address\n`)
+            try {
+                await RequestForNewIP()
+            } catch {
+                console.log(`\n❌ Cannot retriving data from ${chalk.red.bold(repo_name)}, stopping mining in this repo`)
+                emails_new = []
+                const uniqueEmails = uniqBy(emails_array, JSON.stringify)
+                return uniqueEmails
+            }
         }
     } while (emails_new.length !== 0)
     const uniqueEmails = uniqBy(emails_array, JSON.stringify)

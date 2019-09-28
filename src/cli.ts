@@ -7,7 +7,9 @@ import { fetchAllCommitsForSingleRepo } from './fetchAllCommitsForSingleRepo'
 const fileName = `output/${new Date()
     .toUTCString()
     .replace(/ /g, '_')
-    .toLowerCase()}.csv`
+    .toLowerCase()}`
+
+const createCsvWriter = require('csv-writer').createObjectCsvWriter
 
 const readline = require('readline').createInterface({
     input: process.stdin,
@@ -39,13 +41,21 @@ readline.question(
             console.log(`\n\n${chalk.black.bgYellow.bold(`In progress`)} Mining information from the repositories...\n\n`)
             const totalEmails = []
             for (const item of repos) {
-                const emailsArray = await fetchAllCommitsForSingleRepo(item.full_name, keywords, fileName)
+                const emailsArray = await fetchAllCommitsForSingleRepo(item.full_name, keywords, `${fileName}.csv`)
                 totalEmails.push(...emailsArray)
             }
 
+            const uniqueEmails = uniqBy(totalEmails, JSON.stringify)
+            const csvWriter = createCsvWriter({
+                path: `${fileName}_final.csv`,
+                header: [{ id: 'name', title: 'Name' }, { id: 'email', title: 'Email' }, { id: 'keyword', title: 'Keyword' }],
+            })
+
+            await csvWriter.writeRecords(uniqueEmails)
+
             console.log(
-                `\n\n${chalk.green.bold(`${totalEmails.length}`)} emails collected successfully. Data is available in ${chalk.whiteBright.bold(
-                    `./${fileName}`
+                `\n\n${chalk.green.bold(`${uniqueEmails.length}`)} emails collected successfully. Data is available in ${chalk.whiteBright.bold(
+                    `./${fileName}_final.csv`
                 )}...\nThank you for using this tool.For more info visit https://github.com/kirananto\n\n`
             )
 

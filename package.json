@@ -4,7 +4,8 @@
   "description": "Scrape from github",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/cli.ts"
+    "cli": "ts-node src/cli.ts",
+    "webserver": "ts-node src/api.ts"
   },
   "author": "Kiran Anto<kiran@gmail.com>",
   "license": "ISC",
@@ -17,6 +18,8 @@
     "cli-progress": "^3.1.0",
     "csv-writer": "^1.5.0",
     "date-fns": "^2.4.0",
+    "express": "^4.17.1",
+    "lowdb": "^1.0.0",
     "tor-request": "^3.1.0"
   }
 }

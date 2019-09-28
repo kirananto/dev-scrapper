@@ -1,6 +1,7 @@
 import { uniqBy, sleep } from '../helpers/helpers'
 import chalk from 'chalk'
 import { getViaTor } from '../helpers/apiRequest'
+import { pushKeyword } from '../models'
 const _cliProgress = require('cli-progress')
 
 const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic)
@@ -13,6 +14,7 @@ export const searchForRepos = async (keywords: string[], page: number, prevRepos
             url: encodeURI(`https://api.github.com/search/repositories?q=${keywords.join('+')}`),
         })
         if (reposList.length === 0) {
+            await pushKeyword({ keyword: keywords.join('_'), reposCount: result.data.total_count, emailsCount: 0 })
             bar1.start(result.data.total_count, 0)
         }
         await reposList.push(...result.data.items)

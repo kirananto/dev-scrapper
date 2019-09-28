@@ -6,55 +6,48 @@ import { uniqBy, sleep } from '../helpers/helpers'
 import { fetchAllCommitsForSingleRepo } from './fetchAllCommitsForSingleRepo'
 import { format } from 'date-fns'
 import { checkForTor } from './tor'
+import { pushRepo, getEmailList, updateKeyword } from '../models'
 const fileName = `./output/${format(new Date(), `yyyy_MM_dd_HH_mm`)}`
 
 const createCsvWriter = require('csv-writer').createObjectCsvWriter
 export const scrapeEmails = async keywords => {
     try {
         await checkForTor(0)
-        console.log(`\nSearching for keywords: \n${chalk.blue.bold(keywords.map((item, index) => `\n${index+1}. ${item}`))}\n\n`)
+        console.log(`\nSearching for keywords: \n${chalk.blue.bold(keywords.map((item, index) => `\n${index + 1}. ${item}`))}\n\n`)
         let reposList = await searchForRepos(keywords, 0, [])
         if (reposList.length > 0) {
             reposList = uniqBy(reposList, JSON.stringify)
             console.log(`\n\n${chalk.white.bgGreen.bold(` DONE `)} Retrieved ${chalk.bold(`${reposList.length}`)} repositories`)
             await sleep(100)
-            const repos = reposList.map(item => {
+            const repos = await reposList.map(item => {
                 return {
-                    full_name: item.full_name,
+                    full_name: item.full_name.,
                     api_url: `https://api.github.com/repos/${item.full_name}/commits/`,
                     web_url: `https://github.com/${item.full_name}/commits/master`,
                 }
             })
-
+            for (let repo of repos) {
+                await pushRepo({
+                    repoName: repo.full_name,
+                    repoUrl: repo.web_url,
+                    keyword: keywords.join('_'),
+                })
+            }
             await sleep(500)
             console.log(`\n\n${chalk.black.bgYellow.bold(`In progress`)} Mining information from the repositories...\n\n`)
-            const totalEmails = []
-            for (const item of repos) {
-                const emailsArray = await fetchAllCommitsForSingleRepo(
-                    item.full_name,
-                    keywords,
-                    `${fileName}_${keywords
-                        .join('_')
-                        .replace(/ /g, '')}.csv`
-                )
-                totalEmails.push(...emailsArray)
+            for (let item of repos) {
+                await fetchAllCommitsForSingleRepo(item.full_name, keywords, `${fileName}_${keywords.join('_').replace(/ /g, '')}.csv`)
             }
-
-            const uniqueEmails = uniqBy(totalEmails, JSON.stringify)
+            const uniqueEmails = await getEmailList({ keyword: keywords.join('_') })
             const csvWriter = createCsvWriter({
-                path: `${fileName}_${keywords
-                    .join('_')
-                    .replace(/ /g, '')}_final.csv`,
+                path: `${fileName}_${keywords.join('_').replace(/ /g, '')}_final.csv`,
                 header: [{ id: 'name', title: 'Name' }, { id: 'email', title: 'Email' }, { id: 'keyword', title: 'Keyword' }],
             })
-
             await csvWriter.writeRecords(uniqueEmails)
-
+            await updateKeyword({ keyword: keywords.join('_') }, { totalEmailsCount: uniqueEmails.length })
             console.log(
                 `\n\n${chalk.green.bold(`${uniqueEmails.length}`)} emails collected successfully.\nData is available in ${chalk.whiteBright.bold(
-                    `${fileName}_${keywords
-                        .join('_')
-                        .replace(/ /g, '')}_final.csv`
+                    `${fileName}_${keywords.join('_').replace(/ /g, '')}_final.csv`
                 )}...\nThank you for using this tool.\nFor more info visit https://github.com/kirananto\n\n`
             )
             process.exit()

@@ -2,15 +2,9 @@ import { sleep, uniqBy } from '../helpers/helpers'
 import chalk from 'chalk'
 import { RequestForNewIP } from './tor'
 import { getViaTor } from '../helpers/apiRequest'
-const createCsvWriter = require('csv-writer').createObjectCsvWriter
+import { pushEmail, getEmailListCount, updateRepos } from '../models'
 
 export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName) => {
-    const csvWriter = createCsvWriter({
-        path: fileName,
-        header: [{ id: 'name', title: 'Name' }, { id: 'email', title: 'Email' }, { id: 'keyword', title: 'Keyword' }],
-        append: true,
-    })
-    const emails_array = []
     let page = 0
     let emails_new = []
     do {
@@ -27,11 +21,17 @@ export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName
                     email: item.commit.author.email,
                 }))
             page++
-            emails_array.push(...emails_new)
             const emails = uniqBy(emails_new, JSON.stringify)
             await sleep(200)
-            await csvWriter.writeRecords(emails)
-            console.log(`🔄 ${chalk.bgBlue.bold(` PASS ${page} `)} Retrieved ${chalk.green.bold(`${emails_array.length - emails.length}`)} unique emails from page ${page} of ${chalk.green.bold(repo_name)}`)
+            for(let email of emails) {
+                await pushEmail({
+                    email: email.email,
+                    keyword: email.keyword,
+                    name: email.name,
+                    repoName: repo_name
+                })
+            }
+            console.log(`🔄 ${chalk.bgBlue.bold(` PASS ${page} `)} Retrieved ${chalk.green.bold(`${emails.length}`)} emails from page ${page} of ${chalk.green.bold(repo_name)}`)
         } catch (error) {
             console.log(`\n⚠️ Rate limit reached, Trying to refresh the ip address\n`)
             try {
@@ -39,12 +39,10 @@ export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName
             } catch {
                 console.log(`\n❌ Cannot retrieving data from ${chalk.red.bold(repo_name)}, stopping mining in this repo`)
                 emails_new = []
-                const uniqueEmails = uniqBy(emails_array, JSON.stringify)
-                return uniqueEmails
             }
         }
     } while (emails_new.length !== 0)
-    const uniqueEmails = uniqBy(emails_array, JSON.stringify)
-    console.log(`✅ Collected total ${chalk.green.bold(`${uniqueEmails.length}`)} unique emails from ${chalk.green.bold(repo_name)}\n`)
-    return uniqueEmails
+    const emailsCount = await getEmailListCount({ keyword: keywords.join('_'), repoName: repo_name })
+    await updateRepos({ repoName: repo_name })
+    console.log(`✅ Collected total ${chalk.green.bold(`${emailsCount}`)} unique emails from ${chalk.green.bold(repo_name)}\n`)
 }

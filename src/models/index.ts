@@ -18,11 +18,11 @@ db._.mixin({
 export const pushEmail = async ({ email, name, keyword, repoName }: { email: string; name: string; keyword: string; repoName: string }) => {
     await db
         .get('emails')
-        .pushUnique('email', { email, name, keyword, repoName })
+        .pushUnique('email', { email, name, keyword, repoName, repoId: repoName.split('/').join('_') })
         .write()
 }
 
-export const getEmailList = async (filterSet: { keyword?: string; repoName?: string; email?: string }) => {
+export const getEmailList = async (filterSet: { keyword?: string; repoId?: string; email?: string }) => {
     return await db
         .get('emails')
         .filter(filterSet)
@@ -42,7 +42,7 @@ export const getEmailListCount = async (filterSet: { keyword?: string; repoName?
 export const pushKeyword = async ({ keyword, reposCount, emailsCount }: { keyword: string; reposCount: number, emailsCount: number }) => {
     await db
         .get('keywords')
-        .pushUnique('keyword', { keyword: keyword, time: new Date().toISOString(), totalReposCount: reposCount, totalEmailsCount: emailsCount, completed: false })
+        .pushUnique('keyword', { keyword: keyword, time: new Date().toISOString(), totalReposCount: reposCount, totalCompletedRepos: 0, totalEmailsCount: emailsCount, completed: false })
         .write()
 }
 
@@ -65,11 +65,11 @@ export const updateKeyword = async (filterSet?: { keyword: string }, updateConte
 export const pushRepo = async ({ repoName, repoUrl, keyword }: { repoName: string; repoUrl: string; keyword: string }) => {
     await db
         .get('repos')
-        .pushUnique('repoName', { repoName: repoName, repoUrl: repoUrl, keyword: keyword, completed: false })
+        .pushUnique('repoName', { repoName: repoName, repoId: repoName.split('/').join('_'), repoUrl: repoUrl, keyword: keyword, completed: false })
         .write()
 }
 
-export const getRepos = async (filterSet?: { keyword: string, repoName?: string }) => {
+export const getRepos = async (filterSet?: { keyword: string, repoName?: string, repoId?: string }) => {
     return await db
         .get('repos')
         .filter(filterSet)
@@ -77,10 +77,10 @@ export const getRepos = async (filterSet?: { keyword: string, repoName?: string 
         .value()
 }
 
-export const updateRepos = async (filterSet?: { repoName: string }) => {
+export const updateRepos = async (filterSet?: { repoName: string }, updateContent?: object ) => {
     await db
         .get('repos')
         .find(filterSet)
-        .assign({ completed: true })
+        .assign(updateContent)
         .write()
 }

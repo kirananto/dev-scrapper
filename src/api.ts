@@ -22,11 +22,17 @@ app.get('/keywords/:keyword/repos', function (req, res) {
     })
 })
 
-// app.get('/keywords/:keyword/repos/:repoName', function (req, res) {
-//     getRepos({ keyword: req.params.keyword, repoName: req.params.repoName }).then(result => {
-//         res.send(result)  
-//     })
-// })
+app.get('/keywords/:keyword/repos/:repoId', function (req, res) {
+    getRepos({ keyword: req.params.keyword, repoId: req.params.repoId }).then(result => {
+        res.send(result)  
+    })
+})
+
+app.get('/keywords/:keyword/repos/:repoId', function (req, res) {
+    getEmailList({ keyword: req.params.keyword, repoId: req.params.repoId }).then(result => {
+        res.send(result)  
+    })
+})
 
 app.get('/keywords/:keyword/emails/', function (req, res) {
     getEmailList({ keyword: req.params.keyword}).then(result => {

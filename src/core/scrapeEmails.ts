@@ -37,6 +37,7 @@ export const scrapeEmails = async keywords => {
             console.log(`\n\n${chalk.black.bgYellow.bold(`In progress`)} Mining information from the repositories...\n\n`)
             for (let item of repos) {
                 await fetchAllCommitsForSingleRepo(item.full_name, keywords, `${fileName}_${keywords.join('_').replace(/ /g, '')}.csv`)
+                await updateKeyword({ keyword: keywords.join('_') }, { totalCompletedRepos: item+1 })
             }
             const uniqueEmails = await getEmailList({ keyword: keywords.join('_') })
             const csvWriter = createCsvWriter({

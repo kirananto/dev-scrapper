@@ -33,13 +33,16 @@ export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName
             const emails = uniqBy(emails_new, JSON.stringify)
             await sleep(200)
             await csvWriter.writeRecords(emails)
-            console.log(`🔄 Fetching ${chalk.green.bold(`${emails_array.length}`)} emails from ${chalk.green.bold(repo_name)}`)
+            console.log(`🔄${chalk.bold(`PASS ${page+1}`)} Fetching ${chalk.green.bold(`${emails.length}`)} emails from ${chalk.green.bold(repo_name)}`)
         } catch (error) {
             console.log(`❌ Cannot retriving data from ${chalk.red.bold(repo_name)}, stopping mining in this repo`)
             //   console.log("ERROR", error);
             emails_new = []
+            const uniqueEmails = uniqBy(emails_array, JSON.stringify)
+            return uniqueEmails
         }
     } while (emails_new.length !== 0)
-    console.log(`✅ Collected ${chalk.green.bold(`${emails_array.length}`)} emails from ${chalk.green.bold(repo_name)}`)
-    return emails_array
+    const uniqueEmails = uniqBy(emails_array, JSON.stringify)
+    console.log(`✅ Collected total ${chalk.green.bold(`${uniqueEmails.length}`)} unique emails from ${chalk.green.bold(repo_name)}\n`)
+    return uniqueEmails
 }

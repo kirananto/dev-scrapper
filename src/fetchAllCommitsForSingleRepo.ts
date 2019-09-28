@@ -1,7 +1,7 @@
 import { sleep, uniqBy } from './helpers'
-import Axios from 'axios'
 import chalk from 'chalk'
 import { RequestForNewIP } from './tor'
+import { getViaTor } from './apiRequest'
 const createCsvWriter = require('csv-writer').createObjectCsvWriter
 
 export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName) => {
@@ -16,11 +16,8 @@ export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName
     do {
         try {
             await sleep(6000)
-            const result = await Axios({
-                url: `https://api.github.com/repos/${repo_name}/commits`,
-                params: {
-                    page,
-                },
+            const result = await getViaTor({
+                url: `https://api.github.com/repos/${repo_name}/commits?page=${page}`
             })
             emails_new = result.data
                 .filter(item => !(item.commit.author.email.includes('users.noreply.github.com') || item.commit.author.email.includes('@example.com')))

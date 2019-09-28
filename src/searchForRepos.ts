@@ -1,6 +1,6 @@
 import { uniqBy, sleep } from './helpers'
-import Axios from 'axios'
 import chalk from 'chalk'
+import { getViaTor } from './apiRequest'
 const _cliProgress = require('cli-progress')
 
 const bar1 = new _cliProgress.SingleBar({}, _cliProgress.Presets.shades_classic)
@@ -9,7 +9,7 @@ export const searchForRepos = async (keywords: string, page: number, prevReposLi
     const reposList = uniqBy(prevReposList, JSON.stringify)
     let result
     try {
-        result = await Axios({
+        result = await getViaTor({
             url: encodeURI(`https://api.github.com/search/repositories?q=${keywords.split(',').join('+')}`),
         })
         if (reposList.length === 0) {

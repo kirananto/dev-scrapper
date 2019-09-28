@@ -1,4 +1,4 @@
-var tr = require('tor-request')
+const tr = require('tor-request')
 const { spawn } = require('child_process')
 import { sleep } from './helpers'
 tr.TorControlPort.password = 'giraffe'

@@ -22,7 +22,7 @@ export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName
             emails_new = result.data
                 .filter(item => !(item.commit.author.email.includes('users.noreply.github.com') || item.commit.author.email.includes('@example.com')))
                 .map(item => ({
-                    keyword: keywords,
+                    keyword: keywords.join('_'),
                     name: item.commit.author.name,
                     email: item.commit.author.email,
                 }))

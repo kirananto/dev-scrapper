@@ -4,8 +4,8 @@ import chalk from 'chalk'
 import { searchForRepos } from './searchForRepos'
 import { uniqBy, sleep } from './helpers'
 import { fetchAllCommitsForSingleRepo } from './fetchAllCommitsForSingleRepo'
-import { format, compareAsc } from 'date-fns'
-const fileName = `output/${format(new Date(), `yyyy/MM/dd'T'HH:mm`)}`
+import { format } from 'date-fns'
+const fileName = `output/${format(new Date(), `yyyy_MM_dd'T'HH:mm`)}`
 
 const createCsvWriter = require('csv-writer').createObjectCsvWriter
 
@@ -39,13 +39,20 @@ readline.question(
             console.log(`\n\n${chalk.black.bgYellow.bold(`In progress`)} Mining information from the repositories...\n\n`)
             const totalEmails = []
             for (const item of repos) {
-                const emailsArray = await fetchAllCommitsForSingleRepo(item.full_name, keywords, `${fileName}-${keywords.split(',').join('_')}.csv`)
+                const emailsArray = await fetchAllCommitsForSingleRepo(
+                    item.full_name,
+                    keywords,
+                    `${fileName}_${keywords
+                        .split(',')
+                        .join('_')
+                        .replace(/ /g, '')}.csv`
+                )
                 totalEmails.push(...emailsArray)
             }
 
             const uniqueEmails = uniqBy(totalEmails, JSON.stringify)
             const csvWriter = createCsvWriter({
-                path: `${fileName}_${keywords.split(',').join('-')}_final.csv`,
+                path: `${fileName}_${keywords.split(',').join('_')}_final.csv`,
                 header: [{ id: 'name', title: 'Name' }, { id: 'email', title: 'Email' }, { id: 'keyword', title: 'Keyword' }],
             })
 
@@ -53,7 +60,10 @@ readline.question(
 
             console.log(
                 `\n\n${chalk.green.bold(`${uniqueEmails.length}`)} emails collected successfully. Data is available in ${chalk.whiteBright.bold(
-                    `./${fileName}_${keywords.split(',').join('-')}_final.csv`
+                    `./${fileName}_${keywords
+                        .split(',')
+                        .join('_')
+                        .replace(/ /g, '')}_final.csv`
                 )}...\nThank you for using this tool.For more info visit https://github.com/kirananto\n\n`
             )
             process.exit()

@@ -5,7 +5,7 @@ import { searchForRepos } from './searchForRepos'
 import { uniqBy, sleep } from './helpers'
 import { fetchAllCommitsForSingleRepo } from './fetchAllCommitsForSingleRepo'
 import { format } from 'date-fns'
-const fileName = `output/${format(new Date(), `yyyy_MM_dd'T'HH:mm`)}`
+const fileName = `../output/${format(new Date(), `yyyy_MM_dd'T'HH:mm`)}`
 
 const createCsvWriter = require('csv-writer').createObjectCsvWriter
 
@@ -60,7 +60,7 @@ readline.question(
 
             console.log(
                 `\n\n${chalk.green.bold(`${uniqueEmails.length}`)} emails collected successfully.\nData is available in ${chalk.whiteBright.bold(
-                    `./${fileName}_${keywords
+                    `${fileName}_${keywords
                         .split(',')
                         .join('_')
                         .replace(/ /g, '')}_final.csv`

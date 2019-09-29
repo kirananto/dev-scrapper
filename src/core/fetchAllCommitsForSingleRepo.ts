@@ -46,7 +46,7 @@ export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName
                 emails_new = []
             }
         }
-    } while (emails_new.length !== 0)
+    } while (emails_new.length !== 0 || page < 15)
     const emailsCount = await getEmailListCount({ keyword: keywords.join('_'), repoName: repo_name })
     await updateRepos({ repoName: repo_name }, { completed: true, emailCount: emailsCount })
     console.log(`✅ Collected total ${chalk.green.bold(`${emailsCount}`)} unique emails from ${chalk.green.bold(repo_name)}\n`)

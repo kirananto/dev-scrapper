@@ -36,7 +36,8 @@ export const scrapeEmails = async (keywords, invocationSource) => {
             console.log(`\n\n${chalk.black.bgYellow.bold(`In progress`)} Mining information from the repositories...\n\n`)
             for (let item in repos) {
                 await fetchAllCommitsForSingleRepo(repos[item].full_name, keywords, `${fileName}_${keywords.join('_').replace(/ /g, '')}.csv`)
-                await updateKeyword({ keyword: keywords.join('_') }, { totalCompletedRepos: item+1 })
+                const uniqueEmails = await getEmailList({ keyword: keywords.join('_') })
+                await updateKeyword({ keyword: keywords.join('_') }, { totalCompletedRepos: item + 2, totalEmailsCount: uniqueEmails.length })
             }
             const uniqueEmails = await getEmailList({ keyword: keywords.join('_') })
             await updateKeyword({ keyword: keywords.join('_') }, { totalEmailsCount: uniqueEmails.length, completed: true })

@@ -9,7 +9,8 @@ export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName
     let emails_new = []
     do {
         try {
-            await sleep(6000)
+            // 6 seconds is the ideal, let's try reducing
+            await sleep(1000)
             const result = await getViaTor({
                 url: `https://api.github.com/repos/${repo_name}/commits?page=${page}`,
             })
@@ -22,7 +23,7 @@ export const fetchAllCommitsForSingleRepo = async (repo_name, keywords, fileName
                 }))
             page++
             const emails = uniqBy(emails_new, JSON.stringify)
-            await sleep(200)
+            await sleep(100)
             for (let email of emails) {
                 await pushEmail({
                     email: email.email,

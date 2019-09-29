@@ -18,7 +18,6 @@ export const scrapeEmails = async keywords => {
         if (reposList.length > 0) {
             reposList = uniqBy(reposList, JSON.stringify)
             console.log(`\n\n${chalk.white.bgGreen.bold(` DONE `)} Retrieved ${chalk.bold(`${reposList.length}`)} repositories`)
-            await sleep(100)
             const repos = await reposList.map(item => {
                 return {
                     full_name: item.full_name,
@@ -45,7 +44,7 @@ export const scrapeEmails = async keywords => {
                 header: [{ id: 'name', title: 'Name' }, { id: 'email', title: 'Email' }, { id: 'keyword', title: 'Keyword' }],
             })
             await csvWriter.writeRecords(uniqueEmails)
-            await updateKeyword({ keyword: keywords.join('_') }, { totalEmailsCount: uniqueEmails.length })
+            await updateKeyword({ keyword: keywords.join('_') }, { totalEmailsCount: uniqueEmails.length, completed: true })
             console.log(
                 `\n\n${chalk.green.bold(`${uniqueEmails.length}`)} emails collected successfully.\nData is available in ${chalk.whiteBright.bold(
                     `${fileName}_${keywords.join('_').replace(/ /g, '')}_final.csv`

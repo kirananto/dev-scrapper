@@ -11,6 +11,6 @@ console.log(
     )}\n\nThis is a tool where you can enter keywords and get email addresses of\ndevelopers that have worked${` `}on some technologies related to the keywords... \n\n🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥\n`
 )
 readline.question(`\nPlease enter the keywords you wish to search for (comma separated) : `, async keywords => {
-    await scrapeEmails(keywords.split(',').map(item => item.trim()))
+    await scrapeEmails(keywords.split(',').map(item => item.trim()), 'cli')
     readline.close()
 })

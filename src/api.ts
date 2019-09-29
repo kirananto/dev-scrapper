@@ -16,7 +16,7 @@ app.get('/keywords', function(req, res) {
 })
 
 app.post('/keywords', function(req, res) {
-    scrapeEmails(req.body.keywords.split(',').map(item => item.trim()))
+    scrapeEmails(req.body.keywords.split(',').map(item => item.trim()), 'api')
     res.json({ message: "Enqueued the task"})
 })
 
